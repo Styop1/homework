@@ -1,0 +1,302 @@
+// using System;
+//
+// // class Program
+// // {
+// //     static void Main()
+// //     {
+// //         Random rand = new Random();
+// //         int number = rand.Next(1, 101);
+// //         int guess;
+// //         Console.WriteLine("Guess the number between 1 and 100!");
+// //
+// //         do
+// //         {
+// //             Console.Write("Enter your guess: ");
+// //             guess = int.Parse(Console.ReadLine());
+// //
+// //             if (guess > number)
+// //                 Console.WriteLine("Too high!");
+// //             else if (guess < number)
+// //                 Console.WriteLine("Too low!");
+// //             else
+// //                 Console.WriteLine("Correct!");
+// //         } while (guess != number);
+// //     }
+// // }
+// // using System;
+// //
+// // class Program
+// // {
+// //     static void Main()
+// //     {
+// //         Random rand = new Random();
+// //         int[] numbers = new int[10];
+// //
+// //         Console.WriteLine("Array:");
+// //         for (int i = 0; i < numbers.Length; i++)
+// //         {
+// //             numbers[i] = rand.Next(1, 101);
+// //             Console.Write(numbers[i] + " ");
+// //         }
+// //
+// //         int max = numbers[0];
+// //         foreach (int num in numbers)
+// //             if (num > max)
+// //                 max = num;
+// //
+// //         Console.WriteLine($"\nMaximum number: {max}");
+// //     }
+// // }
+// using System;
+//
+// // class Program
+// // {
+// //     static void Main()
+// //     {
+// //         Random rand = new Random();
+// //         int[] numbers = new int[20];
+// //         int even = 0, odd = 0;
+// //
+// //         Console.WriteLine("Array:");
+// //         for (int i = 0; i < numbers.Length; i++)
+// //         {
+// //             numbers[i] = rand.Next(1, 51);
+// //             Console.Write(numbers[i] + " ");
+// //             if (numbers[i] % 2 == 0)
+// //                 even++;
+// //             else
+// //                 odd++;
+// //         }
+// //
+// //         Console.WriteLine($"\nEven numbers: {even}");
+// //         Console.WriteLine($"Odd numbers: {odd}");
+// //     }
+// // }
+// using System;
+//
+// class Program
+// {
+//     static void Main()
+//     {
+//         Random rand = new Random();
+//         int[] numbers = new int[10];
+//         int sum = 0;
+//
+//         Console.WriteLine("Array:");
+//         for (int i = 0; i < numbers.Length; i++)
+//         {
+//             numbers[i] = rand.Next(1, 101);
+//             Console.Write(numbers[i] + " ");
+//             sum += numbers[i];
+//         }
+//
+//         Console.WriteLine($"\nSum of all numbers: {sum}");
+//     }
+// }
+// using System;
+//
+// class Program
+// {
+//     static void Main()
+//     {
+//         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+//         Random rand = new Random();
+//         string password = "";
+//
+//         for (int i = 0; i < 8; i++)
+//             password += chars[rand.Next(chars.Length)];
+//
+//         Console.WriteLine($"Generated password: {password}");
+//     }
+// }
+// using System;
+//
+// class Program
+// {
+//     static void Main()
+//     {
+//         Random rand = new Random();
+//         int[] numbers = new int[15];
+//
+//         Console.WriteLine("Array:");
+//         for (int i = 0; i < numbers.Length; i++)
+//         {
+//             numbers[i] = rand.Next(1, 101);
+//             Console.Write(numbers[i] + " ");
+//         }
+//
+//         int min = numbers[0], max = numbers[0];
+//         foreach (int num in numbers)
+//         {
+//             if (num < min) min = num;
+//             if (num > max) max = num;
+//         }
+//
+//         Console.WriteLine($"\nSmallest number: {min}");
+//         Console.WriteLine($"Largest number: {max}");
+//     }
+// }
+// using System;
+//
+// class Program
+// {
+//     static void Main()
+//     {
+//         Random rand = new Random();
+//         int[] numbers = new int[10];
+//
+//         Console.WriteLine("Normal order:");
+//         for (int i = 0; i < numbers.Length; i++)
+//         {
+//             numbers[i] = rand.Next(1, 101);
+//             Console.Write(numbers[i] + " ");
+//         }
+//
+//         Console.WriteLine("\nReverse order:");
+//         for (int i = numbers.Length - 1; i >= 0; i--)
+//             Console.Write(numbers[i] + " ");
+//     }
+// }
+// using System;
+//
+// class Program
+// {
+//     static void Main()
+//     {
+//         string[] words = { "apple", "banana", "cherry", "grape" };
+//         Random rand = new Random();
+//         string secretWord = words[rand.Next(words.Length)];
+//         string guess;
+//
+//         Console.WriteLine("Guess the secret word!");
+//
+//         do
+//         {
+//             Console.Write("Enter your guess: ");
+//             guess = Console.ReadLine();
+//
+//             if (guess != secretWord)
+//                 Console.WriteLine("Wrong, try again!");
+//             else
+//                 Console.WriteLine("Correct!");
+//         } while (guess != secretWord);
+//     }
+// }
+// using System;
+//
+// class Program
+// {
+//     static void Main()
+//     {
+//         Random rand = new Random();
+//         Console.WriteLine("Dice rolls:");
+//         for (int i = 0; i < 5; i++)
+//             Console.WriteLine($"Roll {i+1}: {rand.Next(1,7)}");
+//     }
+// }
+// using System;
+//
+// class Program
+// {
+//     static void Main()
+//     {
+//         Console.Write("Enter a number: ");
+//         int num = int.Parse(Console.ReadLine());
+//
+//         for (int i = 1; i <= 10; i++)
+//             Console.WriteLine($"{num} x {i} = {num * i}");
+//     }
+// }
+// using System;
+//
+// class Program
+// {
+//     static void Main()
+//     {
+//         Random rand = new Random();
+//         int[] numbers = new int[20];
+//         int positiveSum = 0, negativeSum = 0;
+//
+//         Console.WriteLine("Array:");
+//         for (int i = 0; i < numbers.Length; i++)
+//         {
+//             numbers[i] = rand.Next(-50, 51);
+//             Console.Write(numbers[i] + " ");
+//             if (numbers[i] > 0)
+//                 positiveSum += numbers[i];
+//             else if (numbers[i] < 0)
+//                 negativeSum += numbers[i];
+//         }
+//
+//         Console.WriteLine($"\nSum of positive numbers: {positiveSum}");
+//         Console.WriteLine($"Sum of negative numbers: {negativeSum}");
+//     }
+// }
+// using System;
+// using System.Collections.Generic;
+//
+// class Program
+// {
+//     static void Main()
+//     {
+//         Random rand = new Random();
+//         int[] numbers = new int[10];
+//         HashSet<int> seen = new HashSet<int>();
+//         HashSet<int> duplicates = new HashSet<int>();
+//
+//         Console.WriteLine("Array:");
+//         for (int i = 0; i < numbers.Length; i++)
+//         {
+//             numbers[i] = rand.Next(1, 11);
+//             Console.Write(numbers[i] + " ");
+//             if (!seen.Add(numbers[i]))
+//                 duplicates.Add(numbers[i]);
+//         }
+//
+//         Console.WriteLine("\nDuplicate numbers:");
+//         foreach (int dup in duplicates)
+//             Console.WriteLine(dup);
+//     }
+// }
+// using System;
+//
+// class Program
+// {
+//     static void Main()
+//     {
+//         string[] subjects = { "The cat", "A dog", "The bird" };
+//         string[] verbs = { "jumps over", "runs to", "flies above" };
+//         string[] objects = { "the fence", "the house", "the tree" };
+//
+//         Random rand = new Random();
+//         string sentence = $"{subjects[rand.Next(subjects.Length)]} {verbs[rand.Next(verbs.Length)]} {objects[rand.Next(objects.Length)]}.";
+//
+//         Console.WriteLine("Generated sentence:");
+//         Console.WriteLine(sentence);
+//     }
+// }
+// using System;
+//
+// class Program
+// {
+//     static void Main()
+//     {
+//         string[] choices = { "rock", "paper", "scissors" };
+//         Random rand = new Random();
+//
+//         Console.Write("Choose rock, paper, or scissors: ");
+//         string userChoice = Console.ReadLine().ToLower();
+//         string computerChoice = choices[rand.Next(choices.Length)];
+//
+//         Console.WriteLine($"Computer chose {computerChoice}");
+//
+//         if (userChoice == computerChoice)
+//             Console.WriteLine("It's a tie!");
+//         else if ((userChoice == "rock" && computerChoice == "scissors") ||
+//                  (userChoice == "scissors" && computerChoice == "paper") ||
+//                  (userChoice == "paper" && computerChoice == "rock"))
+//             Console.WriteLine("You win!");
+//         else
+//             Console.WriteLine("Computer wins!");
+//     }
+// }
