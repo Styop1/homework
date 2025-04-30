@@ -1,0 +1,154 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp4
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Employee employee = new Employee();
+            employee.work();
+            employee.go_home();
+            Employee1 employee1 = new Employee1();
+            employee1.work();
+            employee1.go_home();
+        }
+    }
+}
+
+
+interface Iworkable
+{
+    void work();
+    void go_home();
+}
+
+public class Person
+{
+    public string name { get; set; }
+    public int age { get; set; }
+}
+
+public class Employee : Person, Iworkable
+{
+    public void work()
+    {
+        Console.WriteLine("working...");
+    }public void go_home()
+    {
+        Console.WriteLine("going home...");
+    }
+
+}public class Employee1 : Person, Iworkable
+{
+    public void work()
+    {
+        Console.WriteLine("working emp1...");
+    }public void go_home()
+    {
+        Console.WriteLine("going home emp1...");
+    }
+
+}
+
+
+sing System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp3
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+        Car car = new Car();
+        car.Move();
+
+        Bicycle bicycle = new Bicycle();
+        bicycle.Move();
+        }
+
+    }
+
+}
+
+public class Transport
+{
+    public int speed { get; set; }
+    public int capacity { get; set; }
+
+    public virtual void Move()
+    {
+        Console.WriteLine("Moving ...");
+    }
+
+}
+
+public class Car : Transport
+{
+    public string fuel_type { get; set; }
+    public override void  Move()
+    {
+        Console.WriteLine("Car is moving");
+    }
+}
+
+public class Bicycle : Transport
+{
+    public bool has_gears { get; set; }
+    public override void Move()
+    {
+        Console.WriteLine("Bicycle is moving");
+    }
+}
+amespace ConsoleApp6
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            facebook user = new facebook();
+            user.login = "albdarb";
+            user.set_password("ufar20205555");
+            user.login_to_account();
+            
+            
+        }
+    }
+}
+
+public class facebook
+{
+    public string login;
+    private string password;
+
+    public void set_password(string password)
+    {
+        this.password = password;
+    }
+
+
+    public void login_to_account()
+    {
+        Console.WriteLine("enter your login");
+        string inputlogin = Console.ReadLine();
+        Console.WriteLine("enter your password");
+        string inputpassword = Console.ReadLine();
+
+        if (inputlogin == this.login && inputpassword == this.password)
+        {
+            Console.WriteLine("Looged in successfully");
+        }
+        else
+        {
+            Console.WriteLine("Error 404");
+        }
+    }
+}
