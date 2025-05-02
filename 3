@@ -1,0 +1,461 @@
+// namespace ConsoleApp3;
+//
+// class Animal
+// {
+//     public virtual void walk()=>Console.WriteLine("walk ");
+// }
+//
+// class Dog : Animal
+// {
+//     public override void walk() => Console.WriteLine("walk with 4 leg");
+// }
+// Animal mydog = new Dog();
+// mydog.walk();
+// abstract class shape
+// {
+//     public abstract double area();
+// }
+//
+// class cyrcle : shape
+// {
+//     public double radius { get; set; }
+//     public override double area() => Math.PI * radius * radius;
+// }
+//
+// class squere : shape
+// {
+//     public double koxm { get; set; }
+//     public override double area() => koxm * koxm;
+// }
+// var student = new student();
+// student.Name = "syop";
+// student.grades.Add(6);
+// student.grades.Add(5);
+// class student
+// {
+//     private string _name;
+//
+//     public string Name
+//     {
+//         get=> _name;
+//         set => _name=value;
+//     }
+//
+//     public List<int> grades { get; set; } = new List<int>();
+// }
+// class program
+// {
+//     static void Main(string[] args)
+//     {
+//         Console.WriteLine("input any numbers by ,");
+//         string input = Console.ReadLine();
+//         string[] num = input.Split(',');
+//         int sum = 0;
+//         foreach (var numbs in num)
+//         {
+//             sum += int.Parse(numbs);
+//         }
+//         Console.WriteLine(sum);
+//     }
+//
+// }
+// class k
+// {
+//     static void Main(string[] args)
+//     {
+//         Console.WriteLine("enter nummber");
+//         string input = Console.ReadLine();
+//         string[] o = input.Split(',');
+//         int s = 0;
+//         foreach (var d in o)
+//         {
+//             s += int.Parse(o);
+//         }
+//     }
+// }
+// class davgag
+// {
+//     public static void Main(string[] args)
+//     {
+//         Console.WriteLine("write any number bro");
+//         string input = Console.ReadLine();
+//         string[] da=input.Split(',');
+//         int f = 0;
+//         foreach (var k in da)
+//         {
+//             f += int.Parse(k);
+//         }
+//     }
+// }
+// class l
+// {
+//     static void Main(string[] args)
+//     {
+//         Console.WriteLine("entar a tring");
+//         string h=Console.ReadLine();
+//         char[] arr = h.ToCharArray();
+//         Array.Reverse(arr);
+//         string s = new string(arr);
+//         Console.WriteLine(s);
+//     }
+// }
+// class p
+// {
+//     static void Main(string[] args)
+//     {
+//         Console.WriteLine("Hello");
+//         string t=Console.ReadLine();
+//         char[] k = t.ToCharArray();
+//         Array.Reverse(k);
+//         string y = new string(k);
+//         Console.WriteLine(y);
+//     }
+// }
+// class employee
+// {
+//     public string name { get; set; }
+//     public int salary { get; set; }
+//
+//     public string get()
+//     {
+//         return $" name:{name} , salary:{salary}";
+//     }
+// }
+//
+// class program
+// {
+//     static void Main(string[] args)
+//     {
+//         List<employee> employe = new List<employee>()
+//         {
+//             new employee { name = "John", salary = 100 },
+//             new employee { name = "Mary", salary = 200 },
+//         };
+//         foreach (var k in employe)
+//         {
+//             Console.WriteLine(k.get());
+//         }
+//
+//     }
+// }
+
+using System.ComponentModel;
+using System.Threading.Channels;
+
+// class veicicle
+// {
+//     public string model { get; set; }
+//
+//     public virtual string description()
+//     {
+//         return $"veicicle {model}";
+//     } 
+// }
+//
+// class car:veicicle
+// {
+//     public int speed { get; set; }
+//
+//     public override string description()
+//     {
+//         return $"car model: {model} speed: {speed}";
+//     }
+// }
+//
+// class alo
+// {
+//     static void Main(string[] args)
+//     {
+//         veicicle ca = new veicicle { model = "truck" };
+//         car c=new car{model = "sedan",speed=50};
+//         Console.WriteLine(ca.description());
+//         Console.WriteLine(c.description());
+//     }
+//     
+//
+// }
+// class box<T>
+// {
+//     private T _item;
+//
+//     public T item
+//     {
+//         get => _item;
+//         set => _item = value;
+//     }
+//
+//     public string display()
+//     {
+//         return $"box {item}";
+//     }
+//     
+// }
+//
+// class l
+// {
+//     static void Main(string[] args)
+//     {
+//         box<int> box1 = new box<int>{ item = 1 };
+//         box<int> box2 = new box<int>{ item = 2 };
+//         box<int> box3 = new box<int>{ item = 3 };
+//         box<string> box4 = new box<string>{ item = "apple" };
+//         Console.WriteLine(box1.display());
+//         Console.WriteLine(box2.display());
+//         Console.WriteLine(box3.display());
+//         Console.WriteLine(box4.display());
+//     }
+//     
+// }
+// class k
+// {
+//     static void Main(string[] args)
+//     {
+//         Console.WriteLine("a nummber");
+//         int n=int.Parse(Console.ReadLine());
+//         for (int i = 1; i < n; i+=2)
+//         {
+//             Console.WriteLine(i);
+//             if (i + 2 <= n)
+//             {
+//                 Console.WriteLine(";");
+//             }
+//
+//             Console.WriteLine();
+//         }
+//     }
+// }
+// class p
+// {
+//     static void Main(string[] args)
+//     {
+//         Console.WriteLine("writ");
+//         string k=Console.ReadLine();
+//         char[] arr = k.ToCharArray();
+//         Array.Reverse(arr);
+//         string h=new string(arr);
+//         Console.WriteLine(h);
+//     }
+// }
+// class emplyee
+// {
+//     public string name { get; set; }
+//     public decimal salary { get; set; }
+//
+//     public string detal()
+//     {
+//         return $"name: {name}, salary: {salary}";
+//     }
+// }
+//
+// class k
+// {
+//     static void Main(string[] args)
+//     {
+//         List<emplyee> emp = new List<emplyee>()
+//         {
+//             new emplyee { name = "James", salary = 1000 },
+//             new emplyee { name = "Ja", salary = 3000 },
+//         };
+//         foreach (var y in emp)
+//         {
+//             Console.WriteLine(y.detal());
+//         }
+//     }
+// }
+// class vecicl
+// {
+//     public string model { get; set; }
+//
+//     public virtual string Descri()
+//     {
+//         return $"model: {model}";
+//     }
+// }
+//
+// class car : vecicl
+// {
+//     public string color { get; set; }
+//
+//     public override string Descri()
+//     {
+//         return $"model: {model} color: {color}";
+//     }
+//     
+// }
+//
+// class git
+// {
+//     static void Main(string[] args)
+//     {
+//         vecicl h = new vecicl{model = "truck"};
+//         car c = new car{model = "sedan", color = "black"};
+//         Console.WriteLine(h.Descri());
+//         Console.WriteLine(c.Descri());
+//     }
+// }
+// class B<T> 
+// {
+//     private T _item;
+//
+//     public T item
+//     {
+//         get => _item;
+//         set => _item = value;
+//     }
+//
+//     public string display()
+//     {
+//         return $"box {item}";
+//     }
+//     
+//     
+//     
+// }
+//
+// class k
+// {
+//     static void Main(string[] args)
+//     {
+//         B<int> k = new B<int> { item = 100 };
+//         B<string> e = new B<string> { item = "gazi ballon" };
+//         Console.WriteLine(k.display());
+//         Console.WriteLine(e.display());
+//         
+//     }
+// }
+// class Book
+// {
+//     public string Title { get; set; }
+//     public decimal Price { get; set; }
+//
+//     public string getinfo()
+//     {
+//         return $"Title: {Title}, Price: {Price}";
+//     }
+// }
+//
+// class k
+// {
+//     static void Main(string[] args)
+//     {
+//         List<Book> books = new List<Book>
+//         {
+//             new Book { Title = "kam", Price = 200m },
+//             new Book { Title = "kam", Price = 300m },
+//             new Book { Title = "kam", Price = 400m },
+//         };
+//         foreach (var j in books)
+//         {
+//             Console.WriteLine(j.getinfo());
+//         }
+//     }
+// }
+// interface INot
+// {
+//     string ISend(string message);
+// }
+//
+// class emile : INot
+// {
+//     public string emailad{get;set;}
+//
+//     public string ISend(string message)
+//     {
+//         return $"email {emailad}: {message}";
+//     }
+// }
+//
+// class sms : INot
+// {
+//     public string sm{get;set;}
+//
+//     public string ISend(string message)
+//     {
+//         return $"sms {sm}: {message}";
+//     }
+// }
+//
+// class p
+// {
+//     static void Main(string[] args)
+//     {
+//         INot not = new emile{emailad = "i don't know"};
+//         INot not2 = new sms{sm = "me too"};
+//         string message = "mett at 10";
+//         Console.WriteLine(not.ISend(message));
+//         Console.WriteLine(not2.ISend(message));
+//         
+//     }
+// }
+// class coustom<T>
+// {
+//     private List<T> channels = new List<T>();
+//
+//     public void push(T item)
+//     {
+//         channels.Add(item);
+//     }
+//
+//     public T pop()
+//     {
+//         if (channels.Count == 0)
+//             throw new InvalidCastException("Channel is empty");
+//         T top = channels[^1];
+//         channels.RemoveAt(channels.Count - 1);
+//         return top;
+//
+//
+//     }
+//
+//     public T peek()
+//     {
+//         if (channels.Count == 0)
+//             throw new InvalidCastException("Channel is empty");
+//         return channels[^1];
+//     }
+// }
+
+// class d<T>
+// {
+//     private List<T> lol= new List<T>();
+//
+//     public void pu(T item)
+//     {
+//         lol.Add(item);
+//     }
+//
+//     public T po()
+//     {
+//         if (lol.Count == 0)
+//             throw new InvalidCastException("empty");
+//         T k = lol[^1];
+//         lol.RemoveAt(lol.Count -1);
+//         return k;
+//     }
+//
+//     public T pe()
+//     {
+//         if (lol.Count == 0)
+//             throw new InvalidCastException("empty");
+//         return lol[^1];
+//     }
+//     
+// }
+//
+// class u
+// {
+//     static void Main(string[] args)
+//     {
+//         d<int> c = new d<int>();
+//
+//         c.pu(10);
+//         c.pu(20);
+//         c.pu(30);
+//         Console.WriteLine("push id 10,20,30");
+//         int t = c.po();
+//         Console.WriteLine(t);
+//         int t2 = c.pe();
+//         Console.WriteLine(t2);
+//
+//     }
+// }
