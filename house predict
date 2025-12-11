@@ -1,0 +1,286 @@
+import requests
+from bs4 import BeautifulSoup
+import time
+import csv
+import pandas as pd
+import numpy as np
+import re
+
+all_data = []
+
+for page in range(1, 5):
+    url = f"https://myrealty.am/en/hot-offers/?page={page}"
+    result = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+    soup = BeautifulSoup(result.text, "html.parser")
+    cards = soup.find_all("div", class_="item-box")
+    if not cards:
+        break
+    for card in cards:
+        address_tag = card.find("div", class_="item-address")
+        address = address_tag.get_text(strip=True) if address_tag else "No address"
+        price_tag = card.find("div", class_="price")
+        if not price_tag:
+            price_tag = card.find("div", class_="item-price")
+        price = price_tag.get_text(strip=True) if price_tag else "No price"
+        area_tag = card.find("div", class_="item-sqm")
+        area = area_tag.get_text(strip=True) if area_tag else "No area"
+        date_icon = card.find("i", class_="fa fa-calendar")
+        if date_icon:
+            date = date_icon.find_next(text=True).strip()
+        else:
+            date = "No date"
+        all_data.append(["myrealty.am", address, price, area, date])
+    time.sleep(1)
+
+for page in range(1, 15):
+    url = f"https://realtors.am/en/search/2/sale-apartment/?page={page}"
+    result = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+    soup = BeautifulSoup(result.text, "html.parser")
+    cards = soup.find_all("div", class_="caption")
+    if not cards:
+        break
+    for card in cards:
+        address_tag = card.find("div", class_="address")
+        address = address_tag.get_text(strip=True) if address_tag else "No address"
+        price_tag = card.find("div", class_="price")
+        price = price_tag.get_text(strip=True) if price_tag else "No price"
+        area_tag = card.find("div", class_="sqm")
+        area = area_tag.get_text(strip=True) if area_tag else "No area"
+        date_icon = card.find("span", class_="item_date")
+        if date_icon:
+            date = date_icon.find_next(text=True).strip()
+        else:
+            date = "No date"
+        all_data.append(["realtors.am", address, price, area, date])
+    time.sleep(1)
+
+with open("original_data.csv", "w", newline="", encoding="utf-8") as file:
+    writer = csv.writer(file)
+    writer.writerow(["Source", "Address", "Price", "Area (m²)", "Date"])
+    writer.writerows(all_data)
+
+INPUT_CSV = "original_data.csv"
+OUTPUT_CSV = "cleaned_data.csv"
+PLAUSIBLE_BOUNDS = (8, 500)
+
+df = pd.read_csv(INPUT_CSV)
+
+canon = lambda s: re.sub(r'[^a-z0-9]+', '', str(s).strip().lower())
+c2o = {}
+for col in df.columns:
+    c2o.setdefault(canon(col), col)
+
+def find_col(cands):
+    for c in cands:
+        if c in c2o:
+            return c2o[c]
+    for want in cands:
+        for have, orig in c2o.items():
+            if want in have:
+                return orig
+    return None
+
+price_col = find_col(["price"]) or (_ for _ in ()).throw(ValueError("Price column not found"))
+source_col = find_col(["source"]) or (_ for _ in ()).throw(ValueError("Source column not found"))
+area_col = find_col(["area","aream2","aream"]) or (_ for _ in ()).throw(ValueError("Area column not found"))
+addr_col = find_col(["address"]) or (_ for _ in ()).throw(ValueError("Address column not found"))
+
+price_raw = df[price_col].astype("string")
+bad_mask = (
+    price_raw.str.lower()
+    .str.replace(r"\s+","",regex=True)
+    .str.contains("request|month", na=False)
+)
+
+def only_digits(x):
+    if pd.isna(x):
+        return np.nan
+    d = re.sub(r"[^0-9]", "", str(x))
+    return int(d) if d else np.nan
+
+df["_Price_clean"] = pd.to_numeric(price_raw.mask(bad_mask, np.nan).apply(only_digits), errors="coerce")
+
+def mode_or_median(s: pd.Series):
+    s = pd.to_numeric(s, errors="coerce").dropna()
+    if s.empty:
+        return np.nan
+    m = s.mode(dropna=True)
+    return float(m.iloc[0]) if not m.empty else float(s.median())
+
+per_source = df.groupby(source_col)["_Price_clean"].apply(mode_or_median).to_dict()
+global_fill = mode_or_median(df["_Price_clean"])
+
+def fill_price(row):
+    v = row["_Price_clean"]
+    if pd.isna(v):
+        cand = per_source.get(row[source_col], np.nan)
+        v = cand if not pd.isna(cand) else global_fill
+    return (np.nan if pd.isna(v) else int(round(v)))
+
+df[price_col] = pd.to_numeric(df.apply(fill_price, axis=1), errors="coerce").astype("Int64")
+
+ABSOLUTE_MAX = 1_000_000
+df = df[(df[price_col].isna()) | (df[price_col] <= ABSOLUTE_MAX)].copy()
+
+def clean_area_str(s: pd.Series):
+    s = s.astype(str)
+    s = s.str.replace(r"(?i)q\.?\s*m\.?", "", regex=True)
+    s = s.str.replace(r"[mM]²", "", regex=True)
+    s = s.str.replace(r"[^0-9,.\-]", "", regex=True).str.replace(",", ".", regex=False)
+    return s
+
+area_num = pd.to_numeric(clean_area_str(df[area_col]), errors="coerce")
+area_num[(~np.isfinite(area_num)) | (area_num <= 0)] = np.nan
+
+lo, hi = PLAUSIBLE_BOUNDS
+area_num[(area_num < lo) | (area_num > hi)] = np.nan
+
+area_median = area_num.median()
+area_num = area_num.fillna(area_median)
+
+q1, q3 = area_num.quantile(0.25), area_num.quantile(0.75)
+iqr = q3 - q1
+if iqr > 0:
+    area_num = area_num.clip(q1 - 1.5*iqr, q3 + 1.5*iqr)
+
+df[area_col] = area_num.round().astype("Int64")
+
+pattern1 = re.compile(r",\s*([^,]+?)\s*,\s*Yerevan", re.IGNORECASE)
+pattern2 = re.compile(r"^\s*([^,]+?)\s*,\s*[^,]*\b(St|Street)\b", re.IGNORECASE)
+
+def extract_district(addr):
+    if not isinstance(addr, str) or not addr.strip():
+        return np.nan
+    addr = addr.strip()
+    m1 = pattern1.search(addr)
+    if m1:
+        return m1.group(1).strip()
+    m2 = pattern2.search(addr)
+    if m2:
+        return m2.group(1).strip()
+    parts = [p.strip() for p in addr.split(",") if p.strip()]
+    if len(parts) >= 3:
+        return parts[-2]
+    if len(parts) == 2:
+        return parts[0] if not re.search(r"\b(St|Street)\b", parts[0], re.I) else parts[1]
+    return addr
+
+df[addr_col] = df[addr_col].apply(extract_district)
+df.drop(columns=[c for c in ["_Price_clean","_Price_filled"] if c in df.columns], inplace=True, errors="ignore")
+df.to_csv(OUTPUT_CSV, index=False)
+
+df = pd.read_csv("cleaned_data.csv")
+
+df["Price"] = (
+    df["Price"].astype(str)
+    .str.replace(r"[^0-9]", "", regex=True)
+    .replace("", np.nan)
+    .astype(float)
+    .round()
+    .astype("Int64")
+)
+
+df["Area (m²)"] = pd.to_numeric(df["Area (m²)"], errors="coerce")
+
+mask = (df["Price"] > 0) & (df["Area (m²)"] > 0)
+df["price_per_sqm"] = np.where(mask, df["Price"] / df["Area (m²)"], np.nan)
+df["log_price"] = np.where(df["Price"] > 0, np.log(df["Price"]), np.nan)
+df["price_per_sqm"] = df["price_per_sqm"].round(4)
+df["log_price"] = df["log_price"].round(4)
+
+df["District_encoded"] = df["Address"].astype("category").cat.codes
+
+for col in ["Price", "Area (m²)", "price_per_sqm"]:
+    col_min, col_max = df[col].min(), df[col].max()
+    if col_max > col_min:
+        df[col + "_norm"] = ((df[col] - col_min) / (col_max - col_min)).round(4)
+    else:
+        df[col + "_norm"] = np.nan
+
+for col in ["Price", "Area (m²)", "price_per_sqm"]:
+    mean, std = df[col].mean(), df[col].std()
+    if std > 0:
+        df[col + "_std"] = ((df[col] - mean) / std).round(2)
+    else:
+        df[col + "_std"] = np.nan
+
+df["Date"] = pd.to_datetime(df["Date"], format="%d.%m.%Y", errors="coerce")
+df = df.sort_values("Date")
+df["year"] = df["Date"].dt.year
+df["month"] = df["Date"].dt.month
+df["price_lag_1"] = df["Price"].shift(1)
+df["price_roll_5"] = df["Price"].rolling(window=5, min_periods=1).mean().round(2)
+
+df.to_csv("final_cleaned_data.csv", index=False)
+
+df = pd.read_csv("final_cleaned_data.csv")
+df = df.dropna(subset=["Price", "Area (m²)", "price_per_sqm", "District_encoded"])
+
+df["Price"] = pd.to_numeric(df["Price"], errors="coerce")
+df["Area (m²)"] = pd.to_numeric(df["Area (m²)"], errors="coerce")
+df["price_per_sqm"] = pd.to_numeric(df["price_per_sqm"], errors="coerce")
+df["District_encoded"] = pd.to_numeric(df["District_encoded"], errors="coerce")
+
+df = df.dropna(subset=["Price", "Area (m²)", "price_per_sqm", "District_encoded"])
+
+if "Area (m²)_norm" in df.columns and "price_per_sqm_norm" in df.columns:
+    feature_cols = ["Area (m²)_norm", "price_per_sqm_norm", "District_encoded"]
+else:
+    feature_cols = ["Area (m²)", "price_per_sqm", "District_encoded"]
+
+X = df[feature_cols].to_numpy(dtype=float)
+y = df["Price"].to_numpy(dtype=float).reshape(-1, 1)
+
+n_samples, n_features = X.shape
+
+X_b = np.hstack([np.ones((n_samples, 1)), X])
+
+split_idx = int(0.8 * n_samples)
+X_train, X_test = X_b[:split_idx], X_b[split_idx:]
+y_train, y_test = y[:split_idx], y[split_idx:]
+
+def predict(X, w):
+    return X @ w
+
+def mse(X, y, w):
+    y_pred = predict(X, w)
+    return float(np.mean((y_pred - y) ** 2))
+
+def gradient(X, y, w):
+    n = X.shape[0]
+    y_pred = predict(X, w)
+    return (2.0 / n) * (X.T @ (y_pred - y))
+
+def gradient_descent(X, y, lr=0.05, n_iters=2000):
+    n_features = X.shape[1]
+    w = np.zeros((n_features, 1))
+    history = []
+    for i in range(n_iters):
+        grad = gradient(X, y, w)
+        w -= lr * grad
+        if i % 50 == 0 or i == n_iters - 1:
+            cost = mse(X, y, w)
+            history.append(cost)
+    return w, history
+
+learn_rate = 0.05
+n_iterations = 1500
+
+w_opt, loss_history = gradient_descent(X_train, y_train, lr=learn_rate, n_iters=n_iterations)
+
+def evaluate(X, y, w):
+    y_pred = predict(X, w)
+    mse_val = float(np.mean((y_pred - y) ** 2))
+    mae_val = float(np.mean(np.abs(y_pred - y)))
+    ss_tot = float(np.sum((y - y.mean()) ** 2))
+    ss_res = float(np.sum((y - y_pred) ** 2))
+    r2 = float(1 - ss_res / ss_tot) if ss_tot != 0 else np.nan
+    return mse_val, mae_val, r2, y_pred
+
+mse_test, mae_test, r2_test, y_pred_test = evaluate(X_test, y_test, w_opt)
+
+n_show = min(10, X_test.shape[0])
+for i in range(n_show):
+    real_price = float(y_test[i])
+    pred_price = float(y_pred_test[i])
+    print(real_price, pred_price)
